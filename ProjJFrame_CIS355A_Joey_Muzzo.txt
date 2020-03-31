@@ -1,0 +1,636 @@
+------------------------jframe-----CourseProject11
+
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+public class CourseProject11 extends JFrame implements ActionListener, ItemListener, ListSelectionListener {
+
+	private JPanel contentPane;
+	private JTextField txtCustomerName;
+	private JTextField txtCustomerAddress;
+	private JTextField txtFloorLngth;
+	private JTextField txtFloorWidth;
+	private JTextField txtOrderSummary;
+	private JTextField txtCalcArea;
+	private JTextField txtCalcCost;
+	private JRadioButton WoodFlooringbtn;
+	private JRadioButton Carpetbtn;
+	private NumberFormat formatter;
+	private NumberFormat formatter1;
+	JList list_1;
+	private DefaultListModel<Customer> CustomerModel;
+	private double OrderSummary;
+	
+	 private List<Customer> customers = new ArrayList<>();
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					CourseProject11 frame = new CourseProject11();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public CourseProject11() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1000, 500);
+		
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		JMenu mnFile = new JMenu("File");
+		menuBar.add(mnFile);
+		
+		JMenuItem mntmOpen = new JMenuItem("Open");
+		mntmOpen.addActionListener(this);
+		mnFile.add(mntmOpen);
+		
+		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.addActionListener(this);
+		mnFile.add(mntmSave);
+		
+		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				String command = e.getActionCommand();
+				switch (command) 
+				{
+				case "Exit":
+					System.exit(0);
+					break;
+				default:
+					break;
+				}
+			}
+			});
+		mnFile.add(mntmExit);
+		
+		
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(0, 0, 982, 427);
+		contentPane.add(tabbedPane);
+		
+		JPanel CustInfo = new JPanel();
+		tabbedPane.addTab("Customer Information", null, CustInfo, null);
+		CustInfo.setLayout(null);
+		
+		JLabel lblCustomerName = new JLabel("Customer Name:");
+		lblCustomerName.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblCustomerName.setBounds(12, 29, 188, 16);
+		CustInfo.add(lblCustomerName);
+		
+		JLabel lblCustomerAddress = new JLabel("Customer Address:");
+		lblCustomerAddress.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblCustomerAddress.setBounds(12, 71, 149, 16);
+		CustInfo.add(lblCustomerAddress);
+		
+		JLabel lblFloorLength = new JLabel("Floor Length:");
+		lblFloorLength.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblFloorLength.setBounds(12, 166, 129, 32);
+		CustInfo.add(lblFloorLength);
+		
+		JLabel lblFloorWidth = new JLabel("Floor Width:");
+		lblFloorWidth.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblFloorWidth.setBounds(12, 211, 149, 16);
+		CustInfo.add(lblFloorWidth);
+		
+		txtCustomerName = new JTextField();
+		txtCustomerName.setBounds(177, 28, 116, 22);
+		CustInfo.add(txtCustomerName);
+		txtCustomerName.setColumns(10);
+		
+		txtCustomerAddress = new JTextField();
+		txtCustomerAddress.setBounds(177, 70, 116, 22);
+		CustInfo.add(txtCustomerAddress);
+		txtCustomerAddress.setColumns(10);
+		
+		txtFloorLngth = new JTextField();
+		txtFloorLngth.setBounds(177, 173, 116, 22);
+		CustInfo.add(txtFloorLngth);
+		txtFloorLngth.setColumns(10);
+		
+		txtFloorWidth = new JTextField();
+		txtFloorWidth.setBounds(177, 210, 116, 22);
+		CustInfo.add(txtFloorWidth);
+		txtFloorWidth.setColumns(10);
+		
+		WoodFlooringbtn = new JRadioButton("Wood Flooring");
+		WoodFlooringbtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		WoodFlooringbtn.setBounds(12, 264, 188, 25);
+		CustInfo.add(WoodFlooringbtn);
+		
+		Carpetbtn = new JRadioButton("Carpet Flooring");
+		Carpetbtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		Carpetbtn.setBounds(12, 294, 204, 25);
+		CustInfo.add(Carpetbtn);
+		
+		ButtonGroup grpRadios = new ButtonGroup();
+		grpRadios.add(WoodFlooringbtn);
+		grpRadios.add(Carpetbtn);
+		
+		JButton btnSubmitOrder = new JButton("Submit Order");
+		btnSubmitOrder.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) //provides try catches and error messages for customer information input
+			{
+				 double OrderSummary =0;
+                double floorLength=0, floorWidth=0;
+                
+				if  (txtCustomerName.getText().length() == 0) {
+                  	JOptionPane.showMessageDialog(null, "Pease enter the customers name.");
+					return;
+                }
+          
+                if (txtCustomerAddress.getText().length() == 0) {
+                  	JOptionPane.showMessageDialog(null, "Pease enter the customers address.");
+					return;
+                } 
+                if (WoodFlooringbtn.isSelected() == false && Carpetbtn.isSelected() == false) 
+                {
+                	JOptionPane.showMessageDialog(null, "Pease choose a flooring type.");
+                }
+                
+                if (txtFloorLngth.getText().length() == 0) {
+                  	JOptionPane.showMessageDialog(null, "Pease enter the floor length.");
+					return;
+                } 
+                try {
+                  	floorLength = Double.parseDouble(txtFloorLngth.getText());
+                  	if (floorLength < 0)
+                      	throw new NumberFormatException();
+                } catch (NumberFormatException ex) {
+                  JOptionPane.showMessageDialog(null, "Please enter a valid floor length");
+                  return;
+                }
+          
+                if (txtFloorWidth.getText().length() == 0) {
+                  	JOptionPane.showMessageDialog(null, "Pease enter the floor width.");
+					return;
+                } 
+          		try 
+          		{
+                  	floorWidth = Double.parseDouble(txtFloorWidth.getText());                  	
+                } 
+          		catch (NumberFormatException ex) 
+          		{
+          			JOptionPane.showMessageDialog(null, "Please enter a valid floor width");
+          			return;
+                }
+          		floorLength = Double.parseDouble(txtFloorLngth.getText());
+				
+				if ( WoodFlooringbtn.isSelected())
+				{
+					OrderSummary  +=  (floorLength * floorWidth);
+				}
+				if (Carpetbtn.isSelected())
+				{
+					OrderSummary +=  (floorLength * floorWidth);
+				}
+				Customer newCustomer = new Customer(txtCustomerName.getText(), txtCustomerAddress.getText(), floorLength, floorWidth, WoodFlooringbtn.isSelected());
+				//CustomerModel.addElement(newCustomer);
+				 customers.add(newCustomer);
+				 CustomerModel.addElement(newCustomer);
+			}
+			
+			});
+		btnSubmitOrder.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnSubmitOrder.setBounds(427, 331, 141, 25);
+		CustInfo.add(btnSubmitOrder);
+		
+		JButton btnCalculateArea = new JButton("Calculate Area");
+		btnCalculateArea.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+				double floorLength = 0, floorWidth = 0;
+				int OrderSummary = 0;
+				floorLength = Double.parseDouble(txtFloorLngth.getText());
+				floorWidth = Double.parseDouble(txtFloorWidth.getText());
+				if ( WoodFlooringbtn.isSelected())
+				{
+					OrderSummary  +=  (floorLength * floorWidth);
+				}
+				if (Carpetbtn.isSelected())
+				{
+					OrderSummary +=  (floorLength * floorWidth);
+				}
+				txtCalcArea.setText(formatter1.format(OrderSummary) + " Sq Feet");
+				}
+				catch (NumberFormatException ex)
+				{
+					JOptionPane.showMessageDialog(null, "Please enter values for length and width");
+	                  return;
+				}
+			}
+		});
+		btnCalculateArea.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnCalculateArea.setBounds(453, 27, 164, 25);
+		CustInfo.add(btnCalculateArea);
+		
+		JButton btnCalculateCost = new JButton("Calculate Cost");
+		btnCalculateCost.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+				double floorLength = 0, floorWidth = 0;
+				int OrderSummary = 0;
+				floorLength = Double.parseDouble(txtFloorLngth.getText());
+				floorWidth = Double.parseDouble(txtFloorWidth.getText());
+				if ( WoodFlooringbtn.isSelected())
+				{
+					OrderSummary  += 20 * (floorLength * floorWidth);
+				}
+				if (Carpetbtn.isSelected())
+				{
+					OrderSummary += 10 * (floorLength * floorWidth);
+				}
+				txtCalcCost.setText(formatter.format(OrderSummary));//calculates the order cost
+				}
+				catch (NumberFormatException ex)
+				{
+					JOptionPane.showMessageDialog(null, "Please enter values to be calculated");
+	                  return;
+				}
+			}
+		});
+		btnCalculateCost.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnCalculateCost.setBounds(453, 84, 164, 25);
+		CustInfo.add(btnCalculateCost);
+		
+		txtCalcArea = new JTextField();
+		txtCalcArea.setBounds(652, 28, 116, 22);
+		CustInfo.add(txtCalcArea);
+		formatter1 = NumberFormat.getInstance();
+		txtCalcArea.setColumns(10);
+		
+		txtCalcCost = new JTextField();
+		txtCalcCost.setBounds(652, 85, 116, 22);
+		CustInfo.add(txtCalcCost);
+		formatter = NumberFormat.getCurrencyInstance();
+		txtCalcCost.setColumns(10);
+		
+		JButton btnNewOrder = new JButton("New Order");
+		btnNewOrder.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnNewOrder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				ClearControls();
+				txtOrderSummary.setText(null); 							// ------------------------------------added
+				CustomerModel = new DefaultListModel<Customer>();     //     moved up here but it would cause the displayed info to be overwritten
+			}
+		});
+		btnNewOrder.setBounds(639, 330, 129, 27);
+		CustInfo.add(btnNewOrder);
+		
+		JPanel OrderSummary = new JPanel();
+		tabbedPane.addTab("Order Summary", null, OrderSummary, null);
+		OrderSummary.setLayout(null);
+		
+		CustomerModel = new DefaultListModel<Customer>(); 
+		
+//		list = new JList();
+//		list.setFont(new Font("Tahoma", Font.PLAIN, 18));
+//		list.setBounds(0, 0, 629, 218);
+//		list.setModel(CustomerModel);
+//		list.addListSelectionListener(this);
+//		CustInfo.add(list);
+		
+		JButton btnDisplayOrdersummary = new JButton("Display Order Summary");
+		btnDisplayOrdersummary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				double floorLength = 0, floorWidth = 0;
+				int OrderSummary = 0;
+				floorLength = Double.parseDouble(txtFloorLngth.getText());
+				floorWidth = Double.parseDouble(txtFloorWidth.getText());
+				if ( WoodFlooringbtn.isSelected())
+				{
+					OrderSummary  += 20 * (floorLength * floorWidth);
+				}
+				if (Carpetbtn.isSelected())
+				{
+					OrderSummary += 10 * (floorLength * floorWidth);
+				}
+				 txtOrderSummary.setText(""+CustomerModel);
+				//trying to figure out how to display cust info through list model
+				
+				
+			}
+		});
+		btnDisplayOrdersummary.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnDisplayOrdersummary.setBounds(344, 359, 237, 25);
+		OrderSummary.add(btnDisplayOrdersummary);
+		
+		txtOrderSummary = new JTextField();
+		txtOrderSummary.setBounds(51, 31, 854, 290);
+		OrderSummary.add(txtOrderSummary);
+		formatter = NumberFormat.getCurrencyInstance();
+		txtOrderSummary.setColumns(10);
+		
+		
+		JPanel OrderList = new JPanel();
+		tabbedPane.addTab("Order List", null, OrderList, null );
+		OrderList.setLayout(null);
+		
+		DefaultListModel<String> model = new DefaultListModel<>();
+		list_1 = new JList();
+		list_1.setBounds(955, 246, -945, -229);
+		OrderList.add(list_1);		
+		
+		JButton btnDisplayOrderList = new JButton("Display Order List");
+		btnDisplayOrderList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				// IN the action handler for your DisplayOrderList,
+		      	// I would say we need to clear out the entries in listModel
+		      	// and re-insert the customers from the updated customers list.
+				
+				
+				//JOptionPane.showMessageDialog(null, "Where is my data " + customers.size());-----------------changed
+				
+				
+				
+		      //model.removeAllElements();
+		    
+		      	
+		       // Finally, a for-loop to add each customer from your List object named 'customers'
+		     
+		     
+			}
+		});
+		btnDisplayOrderList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnDisplayOrderList.setBounds(385, 359, 214, 25);
+		OrderList.add(btnDisplayOrderList);
+		
+		
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) 
+	{
+		OrderSummary = 0;
+		if ( WoodFlooringbtn.isSelected())
+		{
+			OrderSummary  += 20;
+		}
+		if (Carpetbtn.isSelected())
+		{
+			OrderSummary += 10;
+		}
+		txtOrderSummary.setText(formatter.format(OrderSummary));
+		
+		
+		
+	}
+	private void ClearControls()
+	{
+		WoodFlooringbtn.setSelected(false);
+		Carpetbtn.setSelected(false);
+		txtCustomerName.setText("");
+		txtCustomerAddress.setText("");
+		txtFloorLngth.setText("");
+		txtFloorWidth.setText("");
+		txtCalcArea.setText("");
+		txtCalcCost.setText("");
+		txtOrderSummary.setText("");
+		
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		
+	}
+		
+
+	@Override
+	public void valueChanged(ListSelectionEvent e)
+{
+		// TODO Auto-generated method stub
+		
+	}
+}
+
+
+------------------------------------------Class----Customer
+public class Customer 
+{
+	private String customerName;
+	private String customerAddress;
+	private double floorLength;
+	private double floorWidth;
+    private double unitPriceWood = 20;
+    private double unitPriceCarpet = 10;
+    boolean isWood = true;
+	
+	public Customer()
+	{
+		
+	}
+	
+	public Customer (String cn, String ca, double floorLength, double floorWidth, boolean isWood)
+	{
+		customerName = cn;
+		customerAddress = ca;
+		this.floorLength = floorLength;
+		this.floorWidth = floorWidth;
+        this.isWood = isWood;
+	}
+	
+	public String GetCustomerName()
+	{
+		return customerName;
+	}
+	public void SetCustomerName(String cn) 
+	{
+		customerName = cn;
+	}
+	
+	public String GetcustomerAddress()
+	{
+		return customerAddress;
+	}
+	public void SetcustomerAddress(String ca)
+	{
+		customerAddress = ca;
+	}
+	
+	public double GetfloorLength()
+	{
+		return floorLength;
+	}
+	public void SetfloorLength(double fl)
+	{
+		floorLength = fl;
+	}
+	
+	public double GetfloorWidth()
+	{
+		return floorWidth;
+	}
+	public void SetfloorWidth(double fw)
+	{
+		floorWidth = fw;
+	}
+  	public double GettotalCost()
+	{
+		double cost;
+        if(isWood)
+          cost = GetfloorArea() * unitPriceWood;
+        else
+          cost = GetfloorArea() * unitPriceCarpet;
+      return cost;
+	}
+	
+	public double GetfloorArea()
+	{
+		return floorLength * floorWidth;
+	}
+	
+	public String toString()
+	{
+		return "Name: " + GetCustomerName() + " " + " Address: " + GetcustomerAddress() +"  " + " Floor Area: " + GetfloorArea() + "  " + " Total Cost:  " + String.valueOf(GettotalCost()) ;
+	}
+	
+
+}
+
+
+---------------------------------------------class-----Data
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+
+public class Data
+{
+
+  private Connection connect = null;
+  private Statement statement = null;
+  private ResultSet resultSet = null;
+
+  final private String host = "jdbc:mysql://db4free.net:3306/flooring";
+  final private String user = "localadmin01";
+  final private String passwd = "P4ssw0rd0!";
+  
+  public ArrayList<Customer> readDataBase() throws Exception 
+  {
+	  try
+	  {
+		  Class.forName("com.mysql.jdbc.Driver");
+		  connect = DriverManager.getConnection(host, user, passwd);
+
+		  statement = connect.createStatement();
+
+		  resultSet = statement.executeQuery("select * from customer_info");
+		  ArrayList<Customer> customers = new ArrayList<Customer>();
+		  Customer c;
+		  while(resultSet.next())
+		  {
+			  c = new Customer();
+			  c.customerName = resultSet.getString("name");
+			  c.customerAddress = resultSet.getString("address");
+			  c.floorLength = resultSet.getDouble("length");
+			  c.floorWidth = resultSet.getDouble("width");
+			  c.FloorType = resultSet.getString("type");
+			  customers.add(c);
+		  }
+		  return customers;
+	  }
+	  catch(Exception e)
+	  {
+		  e.printStackTrace();
+	  }
+	  return null;
+  }
+  
+  public String addCustomer(Customer c) throws Exception
+  {
+	  classforName("com.mysql.jdbc.Driver");
+	  connect = DriverManager.getConnection(host, user, passwd);
+	  statement = connect.createStatement();
+	  
+	  int id = statement.executeUpdate("insert into customer_info(name, address, length, width, type) values(" + c.Name + " , " + c.Address + ", " +
+	  c.Length + ", " + c.Width + ", " + c.FloorType + ")");
+	  return "New ID: ID " + id;
+  }
+  
+  private void writeResultSet(ResultSet resultSet) throws SQLException
+  {
+	  
+	  while (resultSet.next()) 
+	  {
+		  String name = resultSet.getString("name");
+		  String address = resultSet.getString("address");
+		  double length = resultSet.getDouble("length");
+		  double width = resultSet.getDouble("width");
+		  String floorType = resultSet.getString("type");
+		  System.out.println(name);
+		  System.out.println(address);
+		  System.out.println("" + length);
+		  System.out.println("" + width);
+		  System.out.println(floorType);
+	  }
+	  
+  }
+	
+}
+  
+
+
